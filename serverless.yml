@@ -1,0 +1,23 @@
+service: commensal-auth-service
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: dev
+  region: eu-west-1
+  environment:
+    SCOPE_ID: ${self:custom.scope}
+    API_URL: https://29xroh6n1e.execute-api.eu-west-1.amazonaws.com/dev/user
+
+custom:
+  scope: co_as
+
+
+functions:  
+  authenticate:
+    handler: handler.authenticateGet
+    events:
+      - http:
+          path: auth
+          method: get
+          cors: true
