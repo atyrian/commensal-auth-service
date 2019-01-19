@@ -23,7 +23,7 @@ module.exports = class Authenticator {
     const payload = {
       iss: process.env.SCOPE_ID,
       sub: type === 'user' ? user[0].id : process.env.SCOPE_ID,
-      exp: type === 'user' ? moment().unix() + 604800 : moment().unix() + 3600,
+      exp: type === 'user' ? moment().unix() + 604800 : moment().unix() + 3600, // 1 week || 1 hour
       aut: type === 'user' ? 'user' : 'service',
     };
     const token = jwt.sign(payload, cert.Parameters[0].Value, { algorithm: 'RS256' });
