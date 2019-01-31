@@ -22,7 +22,7 @@ module.exports = class Authenticator {
     const cert = await ssm.getParameters({ Names: ['jwtRS256.key'] }).promise();
     const payload = {
       iss: process.env.SCOPE_ID,
-      sub: type === 'user' ? user[0].id : process.env.SCOPE_ID,
+      sub: type === 'user' ? user.id : process.env.SCOPE_ID,
       exp: type === 'user' ? moment().unix() + 604800 : moment().unix() + 3600, // 1 week || 1 hour
       aut: type === 'user' ? 'user' : 'service',
     };

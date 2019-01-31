@@ -10,32 +10,27 @@ module.exports = class AuthenticationHttpHandler {
   }
 
   async get() {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const fbToken = this._validateHeaders();
-        const authenticator = new Authenticator();
-        const fbUser = await authenticator.getFBUser(fbToken);
-        const serviceToken = await authenticator.generateToken(null, 'service');
-        const userHandler = new UserHandler(serviceToken);
-        const user = await userHandler.getUser(fbUser.id);
+    const fbToken = this._validateHeaders();
+    const authenticator = new Authenticator();
+    const fbUser = await authenticator.getFBUser(fbToken);
+    const serviceToken = await authenticator.generateToken(null, 'service');
+    const userHandler = new UserHandler(serviceToken);
+    const user = await userHandler.getUser(fbUser.id);
 
-        if (user && user.data && user.data.Count > 0) {
-          const userToken = await authenticator.generateToken(user.data.Items, 'user');
-          const response = this._generateUserResponse(user, userToken);
-          resolve(response);
-        } else {
-          const userNew = await userHandler.createUser(fbUser);
-          if (userNew.data) {
-            const userToken = await authenticator.generateToken(userNew.data.Items, 'user');
-            const response = this._generateUserResponse(userNew, userToken);
-            resolve(response);
-          }
-        }
-      } catch (error) {
-        reject(error);
-      }
-    });
+    if (user && user.data && user.data.Count > 0) {
+      const userToken = await authenticator.generateToken(user.data.Items, 'user');
+      const response = this._generateUserResponse(user, userToken);
+      return response;
+    }
+
+    const userNew = await userHandler.createUser(fbUser);
+    if (userNew.data) {
+      const userToken = await authenticator.generateToken(userNew.data, 'user');
+      const response = this._generateUserResponse(userNew, userToken);
+      return response;
+    }
   }
+
 
   _validateHeaders() {
     if (!this.event.headers || !this.event.headers.Authorization) {
@@ -49,7 +44,7 @@ module.exports = class AuthenticationHttpHandler {
     const response = {
       body: JSON.stringify({
         data: {
-          id: user.data.Items[0].id,
+          id: user.data.id,
           token,
           code: 200,
         },
