@@ -18,7 +18,7 @@ module.exports = class AuthenticationHttpHandler {
     const user = await userHandler.getUser(fbUser.id);
 
     if (user && user.data && user.data.Count > 0) {
-      const userToken = await authenticator.generateToken(user.data.Items, 'user');
+      const userToken = await authenticator.generateToken(user.data.Items[0], 'user');
       const response = this._generateUserResponse(user, userToken);
       return response;
     }
