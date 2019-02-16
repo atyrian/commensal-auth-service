@@ -46,8 +46,8 @@ module.exports = class AuthenticationHttpHandler {
         data: {
           id: user.data.id,
           token,
-          code: 200,
         },
+        code: 200,
       }),
     };
     return response;
