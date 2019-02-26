@@ -20,4 +20,4 @@ functions:
       - http:
           path: auth
           method: get
-          cors: true
+          cors: true # public facing API
