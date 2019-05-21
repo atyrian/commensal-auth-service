@@ -19,18 +19,17 @@ module.exports = class AuthenticationHttpHandler {
 
     if (user && user.data && user.data.Count > 0) {
       const userToken = await authenticator.generateToken(user.data.Items[0], 'user');
-      const response = this._generateUserResponse(user, userToken);
+      const response = this._generateUserResponse(user.data.Items[0].id, userToken);
       return response;
     }
 
     const userNew = await userHandler.createUser(fbUser);
     if (userNew.data) {
       const userToken = await authenticator.generateToken(userNew.data, 'user');
-      const response = this._generateUserResponse(userNew, userToken);
+      const response = this._generateUserResponse(userNew.data.id, userToken);
       return response;
     }
   }
-
 
   _validateHeaders() {
     if (!this.event.headers || !this.event.headers.Authorization) {
@@ -40,11 +39,11 @@ module.exports = class AuthenticationHttpHandler {
     return token;
   }
 
-  _generateUserResponse(user, token) {
+  _generateUserResponse(userId, token) {
     const response = {
       body: JSON.stringify({
         data: {
-          id: user.data.id,
+          id: userId,
           token,
         },
         code: 200,
