@@ -9,7 +9,7 @@ module.exports = class UserHandler {
     const url = `${process.env.API_URL}/${userId}`;
     const response = await fetch(url, { headers: { Authorization: `${this.serviceToken}` } });
     if (response.status !== 200) {
-      throw new common.errors.HttpError(response.statusText, response.status);
+      throw new Error();
     }
 
     const user = await response.json();
